@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Code Review - PR #1234 (範例報告)</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background: #1e1e1e; color: #d4d4d4; }
+    h1, h2, h3 { color: #569cd6; }
+    a { color: #4ec9b0; }
+    .badge { display: inline-block; background: #0e639c; color: white; padding: 2px 8px; border-radius: 10px; font-size: 12px; margin-left: 8px; }
+    .issue { background: #2d2d2d; border-left: 4px solid #f14c4c; padding: 15px; margin: 20px 0; border-radius: 4px; }
+    .issue.medium { border-left-color: #cca700; }
+    .issue.low { border-left-color: #4ec9b0; }
+    table { border-collapse: collapse; width: 100%; margin: 10px 0; }
+    th, td { border: 1px solid #404040; padding: 8px; text-align: left; }
+    th { background: #333; }
+    pre { background: #1e1e1e; border: 1px solid #404040; padding: 10px; overflow-x: auto; }
+    code { font-family: 'Fira Code', Consolas, monospace; }
+    .open-btn { display: inline-block; background: #0e639c; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px; margin: 5px 0; }
+    .open-btn:hover { background: #1177bb; }
+    .summary { background: #2d2d2d; padding: 15px; border-radius: 4px; }
+    .summary .high { color: #f14c4c; }
+    .summary .med { color: #cca700; }
+    .summary .low { color: #4ec9b0; }
+    .summary a.issue-link,
+    .summary a.issue-link:visited,
+    .summary a.issue-link:active { color: #d4d4d4; text-decoration: underline; }
+    .summary a.issue-link:hover { color: #569cd6; }
+    .note { background: #2a2a3a; border: 1px dashed #569cd6; padding: 12px; margin: 15px 0; border-radius: 4px; font-style: italic; color: #9cdcfe; }
+  </style>
+</head>
+<body>
+  <h1>Code Review Report - PR #1234 <span class="badge">範例報告</span></h1>
+
+  <div class="note">
+    此為 PR Code Review 技能產生的範例報告，用於展示報告格式與功能。實際審查時，Claude 會自動取得 PR 異動內容並產生對應的審查結果。
+  </div>
+
+  <div class="summary">
+    <h2>PR 概要</h2>
+    <table>
+      <tr><th>項目</th><th>內容</th></tr>
+      <tr><td>標題</td><td>feat: 新增商品重量驗證功能</td></tr>
+      <tr><td>PR 連結</td><td><a href="https://github.com/SYSCOM-Capital/cec-oms/pull/1234">https://github.com/SYSCOM-Capital/cec-oms/pull/1234</a></td></tr>
+      <tr><td>分支</td><td><code>feature/product-weight-validation</code> → <code>develop</code></td></tr>
+      <tr><td>異動檔案數</td><td>6</td></tr>
+      <tr><td>新增/刪除行數</td><td>+182 / -23</td></tr>
+      <tr><td>專案路徑</td><td><code>/tmp/pr-review/cec-oms-pr-1234/</code></td></tr>
+    </table>
+  </div>
+
+  <!-- Issue #1: 高優先級 -->
+  <div class="issue" id="issue-1">
+    <h3>Issue #1: Null Pointer Exception 風險 — 未檢查 productDetail 是否為 null</h3>
+    <table>
+      <tr><th>項目</th><th>內容</th></tr>
+      <tr><td><strong>檔案名稱</strong></td><td><code>src/main/java/com/cec/oms/service/impl/ProductServiceImpl.java</code></td></tr>
+      <tr><td><strong>行數</strong></td><td>Line 287</td></tr>
+      <tr><td><strong>修正原因</strong></td><td><code>productDao.findById()</code> 可能回傳 null，直接呼叫 <code>.getWeight()</code> 會導致 NPE，在生產環境可能造成整個 API 崩潰。</td></tr>
+    </table>
+
+    <h4>調整前程式碼：</h4>
+    <pre><code>ProductDetail productDetail = productDao.findById(productId);
+BigDecimal weight = productDetail.getWeight();
+if (weight.compareTo(maxWeight) > 0) {
+    throw new BusinessException("商品重量超過限制");
+}</code></pre>
+
+    <h4>調整後程式碼：</h4>
+    <pre><code>ProductDetail productDetail = productDao.findById(productId);
+if (productDetail == null) {
+    throw new BusinessException("找不到商品，商品ID: " + productId);
+}
+BigDecimal weight = productDetail.getWeight();
+if (weight != null && weight.compareTo(maxWeight) > 0) {
+    throw new BusinessException("商品重量超過限制");
+}</code></pre>
+
+    <p><strong>IDE 開啟連結：</strong></p>
+    <a class="open-btn" href="idea://open?file=/tmp/pr-review/cec-oms-pr-1234/src/main/java/com/cec/oms/service/impl/ProductServiceImpl.java&line=287">
+      在 IDE 中開啟 →
+    </a>
+  </div>
+
+  <!-- Issue #2: 中優先級 -->
+  <div class="issue medium" id="issue-2">
+    <h3>Issue #2: N+1 查詢問題 — 迴圈內執行 DB 查詢</h3>
+    <table>
+      <tr><th>項目</th><th>內容</th></tr>
+      <tr><td><strong>檔案名稱</strong></td><td><code>src/main/java/com/cec/oms/service/impl/ProductServiceImpl.java</code></td></tr>
+      <tr><td><strong>行數</strong></td><td>Line 312-318</td></tr>
+      <tr><td><strong>修正原因</strong></td><td>在 for 迴圈內逐筆呼叫 <code>categoryProductDao.existProductOverWeight()</code>，當商品數量大時會產生大量 DB 查詢，嚴重影響效能。應改為批次查詢。</td></tr>
+    </table>
+
+    <h4>調整前程式碼：</h4>
+    <pre><code>List&lt;String&gt; overWeightProducts = new ArrayList&lt;&gt;();
+for (ProductDTO product : productList) {
+    boolean isOverWeight = categoryProductDao.existProductOverWeight(
+        product.getCategoryId(), product.getWeight()
+    );
+    if (isOverWeight) {
+        overWeightProducts.add(product.getProductId());
+    }
+}</code></pre>
+
+    <h4>調整後程式碼：</h4>
+    <pre><code>// 批次查詢，避免 N+1 問題
+List&lt;String&gt; productIds = productList.stream()
+    .map(ProductDTO::getProductId)
+    .collect(Collectors.toList());
+List&lt;String&gt; overWeightProducts = categoryProductDao
+    .findOverWeightProductIds(productIds);</code></pre>
+
+    <p><strong>IDE 開啟連結：</strong></p>
+    <a class="open-btn" href="idea://open?file=/tmp/pr-review/cec-oms-pr-1234/src/main/java/com/cec/oms/service/impl/ProductServiceImpl.java&line=312">
+      在 IDE 中開啟 →
+    </a>
+  </div>
+
+  <!-- Issue #3: 中優先級 -->
+  <div class="issue medium" id="issue-3">
+    <h3>Issue #3: MyBatis foreach 未檢查空陣列</h3>
+    <table>
+      <tr><th>項目</th><th>內容</th></tr>
+      <tr><td><strong>檔案名稱</strong></td><td><code>src/main/resources/mapper/CategoryProductMapper.xml</code></td></tr>
+      <tr><td><strong>行數</strong></td><td>Line 45</td></tr>
+      <tr><td><strong>修正原因</strong></td><td>MyBatis <code>&lt;foreach&gt;</code> 若傳入 null 或空陣列，會產生語法錯誤的 SQL（<code>IN ()</code>），必須在外層加上 <code>&lt;if&gt;</code> 判斷。</td></tr>
+    </table>
+
+    <h4>調整前程式碼：</h4>
+    <pre><code>&lt;select id="findOverWeightProductIds" resultType="string"&gt;
+    SELECT product_id FROM category_product
+    WHERE product_id IN
+    &lt;foreach collection="productIds" item="id" open="(" close=")" separator=","&gt;
+        #{id}
+    &lt;/foreach&gt;
+    AND weight > max_weight
+&lt;/select&gt;</code></pre>
+
+    <h4>調整後程式碼：</h4>
+    <pre><code>&lt;select id="findOverWeightProductIds" resultType="string"&gt;
+    SELECT product_id FROM category_product
+    &lt;where&gt;
+        &lt;if test="productIds != null and productIds.size() > 0"&gt;
+            product_id IN
+            &lt;foreach collection="productIds" item="id" open="(" close=")" separator=","&gt;
+                #{id}
+            &lt;/foreach&gt;
+            AND weight > max_weight
+        &lt;/if&gt;
+    &lt;/where&gt;
+&lt;/select&gt;</code></pre>
+
+    <p><strong>IDE 開啟連結：</strong></p>
+    <a class="open-btn" href="idea://open?file=/tmp/pr-review/cec-oms-pr-1234/src/main/resources/mapper/CategoryProductMapper.xml&line=45">
+      在 IDE 中開啟 →
+    </a>
+  </div>
+
+  <!-- Issue #4: 低優先級 -->
+  <div class="issue low" id="issue-4">
+    <h3>Issue #4: Magic Number — 重量上限應使用常數定義</h3>
+    <table>
+      <tr><th>項目</th><th>內容</th></tr>
+      <tr><td><strong>檔案名稱</strong></td><td><code>src/main/java/com/cec/oms/service/impl/ProductServiceImpl.java</code></td></tr>
+      <tr><td><strong>行數</strong></td><td>Line 295</td></tr>
+      <tr><td><strong>修正原因</strong></td><td>直接寫死 <code>new BigDecimal("30.0")</code> 作為重量上限，日後維護不易，應抽取為常數或從設定檔讀取。</td></tr>
+    </table>
+
+    <h4>調整前程式碼：</h4>
+    <pre><code>BigDecimal maxWeight = new BigDecimal("30.0");</code></pre>
+
+    <h4>調整後程式碼：</h4>
+    <pre><code>private static final BigDecimal MAX_PRODUCT_WEIGHT = new BigDecimal("30.0");
+
+// 使用處
+BigDecimal maxWeight = MAX_PRODUCT_WEIGHT;</code></pre>
+
+    <p><strong>IDE 開啟連結：</strong></p>
+    <a class="open-btn" href="idea://open?file=/tmp/pr-review/cec-oms-pr-1234/src/main/java/com/cec/oms/service/impl/ProductServiceImpl.java&line=295">
+      在 IDE 中開啟 →
+    </a>
+  </div>
+
+  <!-- Issue #5: 低優先級 -->
+  <div class="issue low" id="issue-5">
+    <h3>Issue #5: 變數命名拼字錯誤 (Typo)</h3>
+    <table>
+      <tr><th>項目</th><th>內容</th></tr>
+      <tr><td><strong>檔案名稱</strong></td><td><code>src/main/java/com/cec/oms/service/impl/ProductServiceImpl.java</code></td></tr>
+      <tr><td><strong>行數</strong></td><td>Line 305</td></tr>
+      <tr><td><strong>修正原因</strong></td><td>變數名稱 <code>newReprots</code> 拼字錯誤，應為 <code>newReports</code>，影響程式碼可讀性。</td></tr>
+    </table>
+
+    <h4>調整前程式碼：</h4>
+    <pre><code>List&lt;WeightReport&gt; newReprots = generateWeightReports(productList);</code></pre>
+
+    <h4>調整後程式碼：</h4>
+    <pre><code>List&lt;WeightReport&gt; newReports = generateWeightReports(productList);</code></pre>
+
+    <p><strong>IDE 開啟連結：</strong></p>
+    <a class="open-btn" href="idea://open?file=/tmp/pr-review/cec-oms-pr-1234/src/main/java/com/cec/oms/service/impl/ProductServiceImpl.java&line=305">
+      在 IDE 中開啟 →
+    </a>
+  </div>
+
+  <!-- 總結 -->
+  <div class="summary">
+    <h2>總結</h2>
+    <table>
+      <tr>
+        <th>優先級</th>
+        <th>Issue</th>
+        <th>類型</th>
+        <th>影響</th>
+      </tr>
+      <tr>
+        <td class="high">🔴 高</td>
+        <td><a href="#issue-1" class="issue-link">#1</a></td>
+        <td>NPE 風險</td>
+        <td>生產環境 API 可能崩潰</td>
+      </tr>
+      <tr>
+        <td class="med">🟡 中</td>
+        <td><a href="#issue-2" class="issue-link">#2</a></td>
+        <td>效能</td>
+        <td>N+1 查詢，大量商品時回應緩慢</td>
+      </tr>
+      <tr>
+        <td class="med">🟡 中</td>
+        <td><a href="#issue-3" class="issue-link">#3</a></td>
+        <td>MyBatis 安全</td>
+        <td>空陣列時 SQL 語法錯誤</td>
+      </tr>
+      <tr>
+        <td class="low">🟢 低</td>
+        <td><a href="#issue-4" class="issue-link">#4</a></td>
+        <td>可維護性</td>
+        <td>Magic Number 不易維護</td>
+      </tr>
+      <tr>
+        <td class="low">🟢 低</td>
+        <td><a href="#issue-5" class="issue-link">#5</a></td>
+        <td>程式碼品質</td>
+        <td>變數命名拼字錯誤</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="note" style="margin-top: 30px;">
+    <strong>報告說明：</strong>此範例涵蓋了 PR Code Review 的完整功能展示 —— 包括 PR 概要、各優先級的 Issue 分析（高/中/低）、調整前後程式碼對照、IDE 一鍵開啟連結，以及總結表格含錨點快速跳轉。實際使用時只需執行 <code>/review-pr {PR號碼或URL}</code> 即可自動產生。
+  </div>
+
+</body>
+</html>
