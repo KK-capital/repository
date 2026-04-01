@@ -364,84 +364,100 @@
           <div style="width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid var(--text-dim);margin-top:0;"></div>
         </div>
 
-
+        <!-- Monitoring column -->
+        <div style="display: flex; flex-direction: column; align-items: center; flex: 0 0 auto;">
+          <div class="sec" style="width: fit-content;">
+            <div class="sec-tag tag-cyan">MONITORING</div>
+            <div style="display: flex; align-items: center; gap: 10px; padding: 8px 0 2px;">
+              <div class="icon-box dark" style="width:36px;height:36px;font-size:16px;">📊</div>
+              <div>
+                <div class="icon-label" style="text-align:left;font-size:11px;">監控主機</div>
+                <div class="icon-desc" style="text-align:left;margin-top:2px;">
+                  Prometheus + Grafana<br>OTLP Collector<br>監控所有主機狀態
+                </div>
+              </div>
+            </div>
+            <div class="spec" style="color:var(--accent-cyan);">App · MQ · DB · FIX · MKT · AGL</div>
+          </div>
+          <div style="width:1.5px; height:2px; background:var(--accent-cyan);"></div>
+          <div style="width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid var(--accent-cyan);margin-top:0;"></div>
+        </div>
 
       </div>
 
-      <!-- Horizontal bus bar connecting all three tap points -->
+      <!-- Horizontal bus bar connecting all tap points -->
       <div style="height:1.5px; background:var(--border-accent); margin:0;"></div>
 
-      <!-- Drops from bus → RabbitMQ (orange) · DB (green) · observe (cyan dashed) -->
-      <div style="display:flex; align-items:flex-start; gap:10px;">
-        <div style="display:flex;flex-direction:column;align-items:center;padding:0 50px 0 60px;">
-          <div style="width:1.5px;height:8px;background:var(--accent-orange);"></div>
-          <div style="width:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:6px solid var(--accent-orange);"></div>
-          <div style="font-size:8px;color:var(--accent-orange);font-family:'JetBrains Mono',monospace;margin-top:3px;white-space:nowrap;padding:1px 6px;border:1px solid rgba(251,191,36,0.25);border-radius:3px;background:rgba(251,191,36,0.06);">publish / consume</div>
-        </div>
-        <div style="flex:1;"></div>
-        <div style="display:flex;flex-direction:column;align-items:center;padding:0 80px;">
-          <div style="width:1.5px;height:8px;background:var(--accent-green);"></div>
-          <div style="width:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:6px solid var(--accent-green);"></div>
-          <div style="font-size:8px;color:var(--accent-green);font-family:'JetBrains Mono',monospace;margin-top:3px;white-space:nowrap;padding:1px 6px;border:1px solid rgba(52,211,153,0.25);border-radius:3px;background:rgba(52,211,153,0.06);">batch flush / query</div>
-        </div>
-      </div>
+      <!-- Drops + Mid-tier in same flex row for perfect alignment -->
+      <div style="display:flex; gap:10px; align-items:flex-start;">
 
-      <!-- Middle Tier: RabbitMQ + DB -->
-      <div style="display: flex; gap: 10px; align-items: flex-start;">
-
-        <!-- RabbitMQ -->
-        <div class="sec" style="width: fit-content; border-color: rgba(251,191,36,0.15);">
-          <div class="sec-tag tag-orange">MESSAGE BUS</div>
-          <div style="display: flex; align-items: center; gap: 14px; padding: 8px 0 2px;">
-            <div class="icon-box orange" style="width: 46px; height: 46px; font-size: 22px;">
-              🐇
-              <div class="badge" style="background: var(--accent-orange); color: #0c1017; font-size: 7px; top: -6px; right: -10px; padding: 1px 4px; white-space: nowrap;">Quorum Queue</div>
-            </div>
-            <div>
-              <div class="icon-label" style="text-align: left;">RabbitMQ × 3</div>
-              <div class="icon-desc" style="text-align: left; margin-top: 3px; line-height: 1.6;">
-                Raft 共識協議：需過半數節點存活才能確認寫入<br>
-                3 台中 2 台同意即寫入 → 允許 1 台故障，服務不中斷<br>
-                2 台部署時，任一台故障即失去多數 → 佇列無法寫入
-              </div>
-            </div>
+        <!-- RabbitMQ column: orange drop + box -->
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <div style="display:flex;flex-direction:column;align-items:center;">
+            <div style="width:1.5px;height:8px;background:var(--accent-orange);"></div>
+            <div style="width:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:6px solid var(--accent-orange);"></div>
+            <div style="font-size:8px;color:var(--accent-orange);font-family:'JetBrains Mono',monospace;margin-top:3px;white-space:nowrap;padding:1px 6px;border:1px solid rgba(251,191,36,0.25);border-radius:3px;background:rgba(251,191,36,0.06);">publish / consume</div>
           </div>
-          <div class="spec">8C / 32G / NVMe SSD / 10Gbps</div>
+          <div class="sec" style="width: fit-content; border-color: rgba(251,191,36,0.15); margin-top:4px;">
+            <div class="sec-tag tag-orange">MESSAGE BUS</div>
+            <div style="display: flex; align-items: center; gap: 14px; padding: 8px 0 2px;">
+              <div class="icon-box orange" style="width: 46px; height: 46px; font-size: 22px;">
+                🐇
+                <div class="badge" style="background: var(--accent-orange); color: #0c1017; font-size: 7px; top: -6px; right: -10px; padding: 1px 4px; white-space: nowrap;">Quorum Queue</div>
+              </div>
+              <div>
+                <div class="icon-label" style="text-align: left;">RabbitMQ × 3</div>
+                <div class="icon-desc" style="text-align: left; margin-top: 3px; line-height: 1.6;">
+                  Raft 共識協議：需過半數節點存活才能確認寫入<br>
+                  3 台中 2 台同意即寫入 → 允許 1 台故障，服務不中斷<br>
+                  2 台部署時，任一台故障即失去多數 → 佇列無法寫入
+                </div>
+              </div>
+            </div>
+            <div class="spec">8C / 32G / NVMe SSD / 10Gbps</div>
+          </div>
         </div>
 
-        <!-- Database -->
-        <div class="sec" style="width: fit-content; border-color: rgba(52,211,153,0.15);">
-          <div class="sec-tag tag-green">DATABASE — ALWAYS ON AG</div>
-          <div style="display: flex; gap: 12px; padding: 8px 0 2px; align-items: flex-start;">
-            <div class="icon-node">
-              <div class="icon-box green" style="width: 40px; height: 40px; font-size: 17px;">
-                🗄️
-                <div class="badge badge-green">P</div>
-              </div>
-              <div class="icon-label">SQL Server Primary</div>
-              <div class="icon-desc">讀寫 (R/W)</div>
-            </div>
-            <div style="display: flex; align-items: center; color: var(--text-dim); font-size: 8px; padding-top: 14px; font-family: 'JetBrains Mono', monospace;">
-              <span style="margin-right: 4px;">AG Sync</span><span>→</span>
-            </div>
-            <div class="icon-node">
-              <div class="icon-box green" style="width: 40px; height: 40px; font-size: 17px; opacity: 0.7;">
-                🗄️
-                <div class="badge" style="background: rgba(52,211,153,0.6); color: #0c1017; font-size: 7px;">S</div>
-              </div>
-              <div class="icon-label" style="opacity: 0.7;">Secondary #1</div>
-              <div class="icon-desc">即時抄寫</div>
-            </div>
-            <div class="icon-node">
-              <div class="icon-box green" style="width: 40px; height: 40px; font-size: 17px; opacity: 0.7;">
-                🗄️
-                <div class="badge" style="background: rgba(52,211,153,0.6); color: #0c1017; font-size: 7px;">S</div>
-              </div>
-              <div class="icon-label" style="opacity: 0.7;">Secondary #2</div>
-              <div class="icon-desc">唯讀查詢分流</div>
-            </div>
+        <!-- DB column: green drop + box -->
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <div style="display:flex;flex-direction:column;align-items:center;">
+            <div style="width:1.5px;height:8px;background:var(--accent-green);"></div>
+            <div style="width:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:6px solid var(--accent-green);"></div>
+            <div style="font-size:8px;color:var(--accent-green);font-family:'JetBrains Mono',monospace;margin-top:3px;white-space:nowrap;padding:1px 6px;border:1px solid rgba(52,211,153,0.25);border-radius:3px;background:rgba(52,211,153,0.06);">batch flush / query</div>
           </div>
-          <div class="spec">32C / 128G / 資料碟 2TB / Log碟 200G / TempDB碟 100G / 10Gbps</div>
+          <div class="sec" style="width: fit-content; border-color: rgba(52,211,153,0.15); margin-top:4px;">
+            <div class="sec-tag tag-green">DATABASE — ALWAYS ON AG</div>
+            <div style="display: flex; gap: 12px; padding: 8px 0 2px; align-items: flex-start;">
+              <div class="icon-node">
+                <div class="icon-box green" style="width: 40px; height: 40px; font-size: 17px;">
+                  🗄️
+                  <div class="badge badge-green">P</div>
+                </div>
+                <div class="icon-label">SQL Server Primary</div>
+                <div class="icon-desc">讀寫 (R/W)</div>
+              </div>
+              <div style="display: flex; align-items: center; color: var(--text-dim); font-size: 8px; padding-top: 14px; font-family: 'JetBrains Mono', monospace;">
+                <span style="margin-right: 4px;">AG Sync</span><span>→</span>
+              </div>
+              <div class="icon-node">
+                <div class="icon-box green" style="width: 40px; height: 40px; font-size: 17px; opacity: 0.7;">
+                  🗄️
+                  <div class="badge" style="background: rgba(52,211,153,0.6); color: #0c1017; font-size: 7px;">S</div>
+                </div>
+                <div class="icon-label" style="opacity: 0.7;">Secondary #1</div>
+                <div class="icon-desc">即時抄寫</div>
+              </div>
+              <div class="icon-node">
+                <div class="icon-box green" style="width: 40px; height: 40px; font-size: 17px; opacity: 0.7;">
+                  🗄️
+                  <div class="badge" style="background: rgba(52,211,153,0.6); color: #0c1017; font-size: 7px;">S</div>
+                </div>
+                <div class="icon-label" style="opacity: 0.7;">Secondary #2</div>
+                <div class="icon-desc">唯讀查詢分流</div>
+              </div>
+            </div>
+            <div class="spec">32C / 128G / 資料碟 2TB / Log碟 200G / TempDB碟 100G / 10Gbps</div>
+          </div>
         </div>
 
       </div>
