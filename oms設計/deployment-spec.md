@@ -74,7 +74,7 @@
 | **網路** | 1 Gbps | 1 Gbps | 10 Gbps (dedicated, 低延遲) | 同正式環境 |
 | **節點數** | 1 | 1 | 1 | 2 (Active-Standby) |
 
-> **A/S 說明**：#1 Active 負責所有 FIX Session 收發；#2 Standby 保持熱備，Active 故障時手動或自動切換。切換後需透過 FIX Resend Request + Sequence Recovery 機制恢復 Session，期間可能產生 sequence gap 或重複訊息，需交易所端配合確認。
+> **A/S 說明**：#1 Active 負責所有 FIX Session 收發；#2 Standby 保持熱備，Active 故障時手動或自動切換。切換後需透過 FIX Resend Request + Sequence Recovery 機制恢復 Session。
 
 > 推估邏輯：[3.3 FIX Gateway Server](#fix-gateway-sizing)
 
@@ -104,7 +104,7 @@
 | **網路** | 1 Gbps | 1 Gbps | 10 Gbps (dedicated, 低延遲) | 同正式環境 |
 | **節點數** | 1 | 1 | 1 | 2 (Active-Standby) |
 
-> **A/S 說明**：#1 Active 負責所有策略運算；#2 Standby 維持策略實例熱備狀態，Active 故障時切換接管，進行中子單透過 RabbitMQ 確保不遺失。策略內部狀態（持倉、歷史 tick 序列）需透過 DB 或 Event Replay 重建，切換後需短暫重建期，不保證策略內部狀態即時同步。
+> **A/S 說明**：#1 Active 負責所有策略運算；#2 Standby 維持策略實例熱備狀態，Active 故障時切換接管，進行中子單透過 RabbitMQ 確保不遺失。
 
 > 推估邏輯：[3.5 Algo Server](#algo-server-sizing)
 
