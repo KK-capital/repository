@@ -152,10 +152,7 @@
 | **網路** | 1 Gbps | 1 Gbps |
 | **節點數** | 1 | 1 |
 
-> **監控範疇**：透過 OTLP Collector 統一收集所有主機的 Metrics / Trace / Log，包含 App Server、RabbitMQ、DB Server、FIX Gateway、Market Data、Algo Server。
-> - **Prometheus**：抓取各主機 Metrics（CPU、RAM、網路、Queue 深度、DB 連線數等）
-> - **Grafana**：視覺化儀表板，設定告警規則（如 Queue 深度 > 10K、CPU > 80% 持續 5 分鐘）
-> - **OTLP Collector**：接收 OpenTelemetry 分散式追蹤資料，可串接 Jaeger 或 Grafana Tempo
+> **監控範疇**：獨立主機，負責統一收集並呈現所有主機的運作狀態，提供即時監控儀表板與異常告警，確保各服務健康狀況可視化。
 
 ### 2.2 軟體規格 (Software)
 
