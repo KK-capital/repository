@@ -224,9 +224,12 @@
         </div>
       </div>
 
-      <!-- Arrow -->
-      <div class="flow-arrow">
-        <div><div class="fa-line" style="background: var(--text-dim);"></div><div class="fa-tip" style="border-top: 5px solid var(--text-dim);"></div></div>
+      <!-- Arrow: HTTPS/WSS — 對齊 LB icon 左側 -->
+      <div style="display:flex; align-items:center; gap:6px; padding-left:19px; padding-top:2px; padding-bottom:2px;">
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <div class="fa-line" style="background:var(--text-dim);"></div>
+          <div class="fa-tip" style="border-top:5px solid var(--text-dim);"></div>
+        </div>
         <div class="flow-label">HTTPS / WSS</div>
       </div>
 
@@ -242,15 +245,19 @@
         </div>
       </div>
 
-      <!-- Arrow split -->
-      <div style="display: flex; gap: 80px; padding-left: 30px;">
-        <div class="flow-arrow" style="padding: 0;">
-          <div><div class="fa-line" style="background: var(--text-dim);"></div><div class="fa-tip" style="border-top: 5px solid var(--text-dim);"></div></div>
-          <div class="conn-label">流量分配</div>
+      <!-- Arrow split — 兩條對齊 AP Server #1 / #2 的中心 -->
+      <div style="display:flex; gap:0; padding-left:19px;">
+        <!-- Arrow 1: AP Server #1 中心 ≈ 22px from left of AP sec -->
+        <div style="display:flex;flex-direction:column;align-items:center;width:88px;">
+          <div class="fa-line" style="background:var(--text-dim);"></div>
+          <div class="fa-tip" style="border-top:5px solid var(--text-dim);"></div>
+          <div class="conn-label" style="margin-top:2px;">流量分配</div>
         </div>
-        <div class="flow-arrow" style="padding: 0;">
-          <div><div class="fa-line" style="background: var(--text-dim);"></div><div class="fa-tip" style="border-top: 5px solid var(--text-dim);"></div></div>
-          <div class="conn-label">流量分配</div>
+        <!-- Arrow 2: AP Server #2 中心 -->
+        <div style="display:flex;flex-direction:column;align-items:center;width:88px;">
+          <div class="fa-line" style="background:var(--text-dim);"></div>
+          <div class="fa-tip" style="border-top:5px solid var(--text-dim);"></div>
+          <div class="conn-label" style="margin-top:2px;">流量分配</div>
         </div>
       </div>
 
