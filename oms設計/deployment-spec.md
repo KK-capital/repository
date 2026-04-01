@@ -25,14 +25,6 @@
 | 框架 | WPF (.NET 10) |
 | 用途 | 交易員桌面端，本機安裝，僅支援 Windows |
 
-### 前端 — WEB
-
-| 指標 | 數值 |
-|------|------|
-| 框架 | ASP.NET Core 10 Blazor WebAssembly / Razor Pages |
-| UI 元件庫 | MudBlazor 或 Radzen（.NET 原生元件庫） |
-| 狀態管理 | .NET 內建 DI + Blazor State（統一 .NET 10 生態） |
-
 ---
 
 ## 二、建議規格總覽
