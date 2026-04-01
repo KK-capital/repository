@@ -1,7 +1,7 @@
 # FB-BTS OMS 部署規格建議書
 
 > **版本**: 5.2 | **日期**: 2026-04-01
-> **系統**: FB-BTS Order Management System (Electron / Web + .NET 10 Backend)
+> **系統**: FB-BTS Order Management System (WPF + .NET 10)
 
 ---
 
@@ -22,16 +22,16 @@
 
 | 指標 | 數值 |
 |------|------|
-| 框架 | React 19 + Vite 7 + Electron 36 |
-| 用途 | 交易員桌面端，本機安裝，支援 Windows / macOS / Linux |
+| 框架 | WPF (.NET 10) |
+| 用途 | 交易員桌面端，本機安裝，僅支援 Windows |
 
 ### 前端 — WEB
 
 | 指標 | 數值 |
 |------|------|
-| 框架 | Next.js 15 (App Router)，支援 SSR/SSG、內建路由、API Routes 代理 |
-| UI 元件庫 | Radix UI + Tailwind CSS (Headless + 自訂樣式) |
-| 狀態管理 | Zustand (client) + TanStack Query (server)，輕量 + 資料快取 |
+| 框架 | ASP.NET Core 10 Blazor WebAssembly / Razor Pages |
+| UI 元件庫 | MudBlazor 或 Radzen（.NET 原生元件庫） |
+| 狀態管理 | .NET 內建 DI + Blazor State（統一 .NET 10 生態） |
 
 ---
 
@@ -165,11 +165,10 @@
 |------|---------|:------:|---------|
 | **App Server OS** | Ubuntu 24.04 LTS | 2029-04 | [.NET 10 支援矩陣](https://github.com/dotnet/core/blob/main/release-notes/10.0/supported-os.md) |
 | **DB Server OS** | Windows Server 2025 | 2034 | [SQL Server on Linux](https://learn.microsoft.com/en-us/sql/linux/sql-server-linux-setup) |
+| **Client OS** | Windows 10 (22H2) / Windows 11 | — | WPF 僅支援 Windows |
 | **.NET SDK** | 10.0.x (LTS) | ~2028 | [.NET 10 Download](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) |
 | **ASP.NET Core** | 10.0.x | ~2028 | [ASP.NET Core 10.0](https://learn.microsoft.com/en-us/aspnet/core/release-notes/aspnetcore-10.0) |
-| **Node.js** | 22.x LTS | 2027-04 | [Node.js Releases](https://nodejs.org/en/about/previous-releases) |
-| **Electron** | 36.x (Chromium 136) | ~2025 Q4 | [Electron Releases](https://releases.electronjs.org/) |
-| **pnpm** | 10.x | Ongoing | [pnpm](https://pnpm.io/installation) |
+| **WPF** | .NET 10 內建 | ~2028 | [WPF on .NET](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/) |
 
 #### 資料庫 & 訊息佇列
 
@@ -817,7 +816,7 @@ FIX / Market Data / Algo 三個服務的實際資源消耗輕量（合計約 +8�
 | 13 | RabbitMQ .NET Client | https://www.rabbitmq.com/client-libraries/dotnet-api-guide |
 | 14 | Serilog for ASP.NET Core | https://github.com/serilog/serilog-aspnetcore |
 | 15 | OpenTelemetry .NET | https://opentelemetry.io/docs/languages/dotnet/getting-started/ |
-| 16 | Node.js 22 Release | https://nodejs.org/en/blog/announcements/v22-release-announce |
+| 16 | WPF on .NET | https://learn.microsoft.com/en-us/dotnet/desktop/wpf/ |
 | 17 | .NET 10 Supported OS | https://github.com/dotnet/core/blob/main/release-notes/10.0/supported-os.md |
 | 18 | OWASP Top 10 | https://owasp.org/www-project-top-ten/ |
 | 19 | Mozilla SSL Configuration | https://ssl-config.mozilla.org/ |
