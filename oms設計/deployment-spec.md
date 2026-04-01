@@ -11,7 +11,7 @@
 
 | 指標 | 數值 |
 |------|------|
-| 框架 | .NET 10 + ASP.NET Core Web API + SignalR |
+| 框架 | .NET 10 (ASP.NET Core Web API + SignalR) |
 | 資料庫 | MSSQL (Production) / SQLite (Local Dev) |
 | ORM | Entity Framework Core 10.0.5 |
 | SignalR Hub | 1 (OmsHub, 即時推播) |
