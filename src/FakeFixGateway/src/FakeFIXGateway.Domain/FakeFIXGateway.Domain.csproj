@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- .NET 10 類別庫：Domain 層，不依賴任何外部套件 -->
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>FakeFIXGateway.Domain</RootNamespace>
+  </PropertyGroup>
+
+</Project>
